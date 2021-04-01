@@ -6,7 +6,10 @@
             </div>
 
             <div class="card-body" :class="{ 'd-none': hidepanel}">
-                <form id="aptForm">
+                <form
+                        id="aptForm"
+                        @submit.prevent="requestAdd"
+                >
                     <div class="form-group form-row">
                         <label class="col-md-2 col-form-label text-md-right" for="petName">Pet Name</label>
                         <div class="col-md-10">
@@ -16,6 +19,7 @@
                                     name="petName"
                                     id="petName"
                                     placeholder="Pet's Name"
+                                    v-model="formData.petName"
                             >
                         </div>
                     </div>
@@ -23,18 +27,35 @@
                     <div class="form-group form-row">
                         <label class="col-md-2 col-form-label text-md-right" for="ownerName">Pet Owner</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" id="ownerName" placeholder="Owner's Name">
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="ownerName"
+                                    placeholder="Owner's Name"
+                                    v-model="formData.petOwner"
+                            >
                         </div>
                     </div>
 
                     <div class="form-group form-row">
                         <label class="col-md-2 col-form-label text-md-right" for="aptDate">Date</label>
                         <div class="col-md-4">
-                            <input type="date" class="form-control" id="aptDate">
+                            <input
+                                    type="date"
+                                    class="form-control"
+                                    id="aptDate"
+                                    v-model="formData.aptDate"
+                            >
                         </div>
                         <label class="col-md-2 col-form-label text-md-right" for="aptTime">Time</label>
                         <div class="col-md-4">
-                            <input type="time" class="form-control" name="aptTime" id="aptTime">
+                            <input
+                                    type="time"
+                                    class="form-control"
+                                    name="aptTime"
+                                    id="aptTime"
+                                    v-model="formData.aptTime"
+                            >
                         </div>
                     </div>
 
@@ -48,6 +69,7 @@
                       name="aptNotes"
                       id="aptNotes"
                       placeholder="Appointment Notes"
+                      v-model="formData.aptNotes"
               ></textarea>
                         </div>
                     </div>
@@ -70,11 +92,22 @@
         name: "AddAppointment",
         data() {
             return {
+                formData: [],
                 hidepanel: true
             }
         },
         components: {
             FontAwesomeIcon
+        },
+        methods: {
+            requestAdd: function(){
+                this.formData = {
+                    petName: this.formData.petName,
+                    petOwner: this.formData.petOwner,
+                    aptDate: this.formData.aptDate + ' ' + this.formData.aptTime,
+                    aptNotes: this.formData.aptNotes
+                }
+            }
         }
     }
 </script>
