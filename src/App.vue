@@ -2,8 +2,12 @@
     <div id="main-app" class="container">
         <div class="row justify-content-center">
             <add-appointment @add="addItem"/>
-            <search-appointments @searchRecords="searchAppointments"/>
-            <appointment-list :appointments="searchedApts" @remove="removeItem" @edit="editItem"/>
+            <search-appointments
+                    @searchRecords="searchAppointments"
+                    :myKey="filterKey"
+                    :myDir="filterDir"
+            />
+            <appointment-list :appointments="filteredApts" @remove="removeItem" @edit="editItem"/>
         </div>
     </div>
 </template>
@@ -21,7 +25,9 @@
             return {
                 appointments: [],
                 aptIndex: 0,
-                searchTerms: ""
+                searchTerms: "",
+                filterKey: "petName",
+                filterDir: "asc"
             };
         },
         components: {
@@ -38,8 +44,8 @@
                     return item;
                 })));
         },
-        computed : {
-            searchedApts: function(){
+        computed: {
+            searchedApts: function () {
                 return this.appointments.filter(item => {
                     return (
                         item.petName.toLowerCase().match(this.searchTerms.toLowerCase()) ||
@@ -47,24 +53,32 @@
                         item.aptNotes.toLowerCase().match(this.searchTerms.toLowerCase())
                     )
                 })
+            },
+            filteredApts: function () {
+                return _.orderBy(
+                    this.searchedApts,
+                    item => {
+                        return item[this.filterKey].toLowerCase();
+                    }, this.filterDir
+                );
             }
         },
         methods: {
-            removeItem: function(apt) {
+            removeItem: function (apt) {
                 this.appointments = _.without(this.appointments, apt);
             },
-            editItem: function(id, field, text){
+            editItem: function (id, field, text) {
                 const aptIndex = _.findIndex(this.appointments, {
                     aptId: id
                 });
                 this.appointments[aptIndex][field] = text;
             },
-            addItem: function(apt){
+            addItem: function (apt) {
                 apt.aptId = this.aptIndex;
                 this.aptIndex++;
                 this.appointments.push(apt);
             },
-            searchAppointments: function(terms){
+            searchAppointments: function (terms) {
                 this.searchTerms = terms;
             }
         }
