@@ -7,6 +7,7 @@
                     type="text"
                     class="form-control"
                     aria-label="Search Appointments"
+                    v-model="searchTerm"
             >
 
             <div class="input-group-append">
@@ -69,8 +70,13 @@
         name: "SearchAppointments",
         data() {
             return {
-                searchString: ""
+                searchTerm: ""
             }
+        },
+        watch: {
+          searchTerm: function() {
+              this.$emit('searchRecords', this.searchTerm);
+          }
         },
         components: {
             FontAwesomeIcon
